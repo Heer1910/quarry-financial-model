@@ -28,6 +28,7 @@ A complete three-statement financial model and DCF valuation for Chipotle Mexica
 
 ## Project structure
 
+```
 quarry-financial-model/
 ├── data/                          # Historical 10-K data (2021A-2025A) as CSV
 │   ├── historical_is.csv
@@ -44,7 +45,7 @@ quarry-financial-model/
 ├── tests/                         # (Coming soon)
 ├── requirements.txt
 └── README.md
-
+```
 
 ---
 

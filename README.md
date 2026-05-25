@@ -1,10 +1,12 @@
-# Quarry - Chipotle Mexican Grill Financial Model
+# Quarry — Chipotle Mexican Grill Financial Model
 
 🌐 **[Live Demo →](https://quarry-cmg-model.streamlit.app)** · 📂 [GitHub Repo](https://github.com/Heer1910/quarry-financial-model)
 
 A complete three-statement financial model and DCF valuation for Chipotle Mexican Grill (NYSE: CMG), built in both Google Sheets and Python.
 
 **Implied share price:** $19.40 (Base case) vs. current $32.89 → **41% downside**
+
+![Dashboard](docs/screenshots/01_dashboard_hero.png)
 
 ---
 
@@ -18,6 +20,10 @@ A complete three-statement financial model and DCF valuation for Chipotle Mexica
 
 **Conclusion:** Even the bull case shows modest downside. The market is pricing CMG beyond an aggressive-recovery scenario, suggesting the stock is fully valued to overvalued.
 
+![Bull case toggled](docs/screenshots/03_bull_case.png)
+
+*Scenarios update in real-time via the sidebar toggle.*
+
 ---
 
 ## What this project demonstrates
@@ -25,6 +31,7 @@ A complete three-statement financial model and DCF valuation for Chipotle Mexica
 - **Financial modeling fundamentals:** historical balance sheet reconciliation across 5 years (treasury stock retirement, 50-for-1 stock split, materiality adjustments), three-statement linking, DCF valuation with WACC and terminal value, scenario analysis
 - **Python proficiency:** translating Excel logic to pandas DataFrames, modular code architecture, proper IS→BS→CF circular linking
 - **Data pipelines:** loading historical 10-K data from CSV files, cleaning currency strings, structured data validation
+- **Deployment:** interactive Streamlit dashboard hosted on Streamlit Community Cloud
 
 ---
 
@@ -32,19 +39,23 @@ A complete three-statement financial model and DCF valuation for Chipotle Mexica
 
 ```
 quarry-financial-model/
-├── data/                          # Historical 10-K data (2021A-2025A) as CSV
+├── app/
+│   └── streamlit_app.py        # Interactive dashboard
+├── data/                       # Historical 10-K data (2021A-2025A) as CSV
 │   ├── historical_is.csv
 │   ├── historical_bs.csv
 │   └── historical_cf.csv
-├── src/                           # Model logic
-│   ├── assumptions.py             # Bull/Base/Bear scenario inputs
-│   ├── data_loader.py             # CSV → pandas DataFrames
-│   ├── income_statement.py        # IS forecast (2026E-2030E)
-│   ├── balance_sheet.py           # BS forecast with cash plug
-│   ├── cash_flow.py               # CF forecast + circular link to BS
-│   ├── dcf.py                     # DCF valuation
-│   └── main.py                    # Orchestrator
-├── tests/                         # (Coming soon)
+├── docs/
+│   └── screenshots/            # Project visuals
+├── src/                        # Model logic
+│   ├── assumptions.py          # Bull/Base/Bear scenario inputs
+│   ├── data_loader.py          # CSV → pandas DataFrames
+│   ├── income_statement.py     # IS forecast (2026E-2030E)
+│   ├── balance_sheet.py        # BS forecast with cash plug
+│   ├── cash_flow.py            # CF forecast + circular link to BS
+│   ├── dcf.py                  # DCF valuation
+│   └── main.py                 # Orchestrator
+├── tests/
 ├── requirements.txt
 └── README.md
 ```
@@ -63,11 +74,12 @@ python3 -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-# Run the full model
+# Run the full model (CLI output)
 python3 -m src.main
-```
 
-Output: Bull/Base/Bear DCF summaries plus a scenario comparison table.
+# OR launch the interactive Streamlit dashboard
+streamlit run app/streamlit_app.py
+```
 
 ---
 
@@ -85,13 +97,27 @@ Output: Bull/Base/Bear DCF summaries plus a scenario comparison table.
 
 **Scenarios:** Single-dropdown toggle in Sheets, `get_assumptions(scenario)` function in Python. Bear/Base/Bull differ on store openings, AUV growth, cost ratios, beta, and terminal growth.
 
+### DCF build
+
+![DCF breakdown](docs/screenshots/02_dcf_breakdown.png)
+
 ---
 
 ## Excel vs. Python
 
-The same model exists in two forms:
-- **Google Sheets:** Full 3-statement model with dynamic scenario toggle. [Link coming soon]
-- **Python:** Modular implementation in `src/`. Output matches Sheets within $0.04 per share across all scenarios.
+The same model exists in two forms. Output matches within $0.04 per share across all scenarios.
+
+### Google Sheets — Assumptions tab
+
+![Sheets assumptions](docs/screenshots/04_sheets_assumptions.png)
+
+### Google Sheets — DCF tab
+
+![Sheets DCF](docs/screenshots/05_sheets_dcf.png)
+
+### Python — modular implementation
+
+![Python DCF code](docs/screenshots/06_code_dcf.png)
 
 This dual implementation demonstrates the ability to translate financial logic between tools — a key skill in real FP&A and equity research workflows.
 

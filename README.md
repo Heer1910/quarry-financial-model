@@ -1,4 +1,4 @@
-# Quarry — Chipotle Mexican Grill Financial Model
+# Quarry - Chipotle Mexican Grill Financial Model
 
 🌐 **[Live Demo →](https://quarry-cmg-model.streamlit.app)** · 📂 [GitHub Repo](https://github.com/Heer1910/quarry-financial-model)
 
@@ -130,15 +130,15 @@ Six tests verify:
 
 The same model exists in two forms. Output matches within $0.04 per share across all scenarios.
 
-### Google Sheets — Assumptions tab
+### Google Sheets - Assumptions tab
 
 ![Sheets assumptions](docs/screenshots/04_sheets_assumptions.png)
 
-### Google Sheets — DCF tab
+### Google Sheets - DCF tab
 
 ![Sheets DCF](docs/screenshots/05_sheets_dcf.png)
 
-### Python — modular implementation
+### Python - modular implementation
 
 ![Python DCF code](docs/screenshots/06_code_dcf.png)
 
@@ -158,5 +158,5 @@ All inputs are verifiable. See [`docs/sources.md`](docs/sources.md) for direct l
 
 ## Author
 
-**Heer Patel** — Data Science + Finance, University of Illinois Chicago (May 2026)
+**Heer Patel** - Data Science + Finance, University of Illinois Chicago (May 2026)
 [Portfolio](https://heer1910.github.io) · [LinkedIn](https://www.linkedin.com/in/heer1910)

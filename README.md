@@ -1,4 +1,4 @@
-# Quarry — Chipotle Mexican Grill Financial Model
+# Quarry - Chipotle Mexican Grill Financial Model
 
 A complete three-statement financial model and DCF valuation for Chipotle Mexican Grill (NYSE: CMG), built in both Google Sheets and Python.
 

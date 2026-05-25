@@ -139,7 +139,7 @@ with col1:
     st.write(f"- Beta: {assumptions['beta']:.2f}")
     st.write(f"- Cost of equity: {(assumptions['risk_free_rate'] + assumptions['beta'] * assumptions['equity_risk_premium']):.2%}")
     st.write(f"- After-tax cost of debt: {assumptions['after_tax_cost_of_debt']:.2%}")
-    st.write(f"- WACC: {dcf['wacc']:.2%}**")
+    st.write(f"- WACC: {dcf['wacc']:.2%}")
 
 with col2:
     st.markdown("**Valuation Bridge**")

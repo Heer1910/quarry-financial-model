@@ -18,7 +18,7 @@ A complete three-statement financial model and DCF valuation for Chipotle Mexica
 | Base | $19.40 | -41.0% | Steady-state, no recovery |
 | Bull | $29.76 | -9.5% | Aggressive recovery still below market |
 
-**Conclusion:** Even the bull case shows modest downside. The market is pricing CMG beyond an aggressive-recovery scenario, suggesting the stock is fully valued to overvalued.
+**Conclusion:** The Base case suggests CMG trades above intrinsic value under normalized growth and margin assumptions. Even the Bull case remains below the current market price, implying the market may be pricing in execution beyond the model's aggressive recovery case.
 
 ![Bull case toggled](docs/screenshots/03_bull_case.png)
 
@@ -47,15 +47,18 @@ quarry-financial-model/
 │   └── historical_cf.csv
 ├── docs/
 │   └── screenshots/            # Project visuals
+├── model/
+│   └── Chipotle_3SM_Model.xlsx # Excel/Sheets source model
 ├── src/                        # Model logic
-│   ├── assumptions.py          # Bull/Base/Bear scenario inputs
+│   ├── assumptions.py          # Bull/Base/Bear scenarios + market inputs
 │   ├── data_loader.py          # CSV → pandas DataFrames
 │   ├── income_statement.py     # IS forecast (2026E-2030E)
 │   ├── balance_sheet.py        # BS forecast with cash plug
 │   ├── cash_flow.py            # CF forecast + circular link to BS
-│   ├── dcf.py                  # DCF valuation
+│   ├── dcf.py                  # DCF valuation with scenarios
 │   └── main.py                 # Orchestrator
 ├── tests/
+│   └── test_model.py           # 6 sanity checks (balance, scenarios, UFCF, etc.)
 ├── requirements.txt
 └── README.md
 ```
@@ -83,6 +86,24 @@ streamlit run app/streamlit_app.py
 
 ---
 
+## Tests
+
+The model includes a `pytest` suite that validates correctness:
+
+```bash
+pytest tests/ -v
+```
+
+Six tests verify:
+- Balance sheet balances across all forecast years and scenarios
+- Scenario ordering: Bear price < Base price < Bull price
+- Net debt is negative (CMG holds net cash, no traditional debt)
+- UFCF is positive in every forecast year, every scenario
+- Cash balance never goes negative under any scenario
+- Base case implied price matches the reference Sheets model within $1
+
+---
+
 ## Methodology
 
 **Historical period (2021A-2025A):** Sourced from Chipotle 10-K filings on SEC EDGAR. Balance sheet reconciles to zero across all five years after adjusting for the 50-for-1 stock split (mid-2024) and treasury stock retirement ($5.2B).
@@ -105,6 +126,8 @@ streamlit run app/streamlit_app.py
 
 ## Excel vs. Python
 
+📥 **[Download the Excel model →](model/Chipotle_3SM_Model.xlsx)** — Full 3-statement model with dynamic scenario toggle.
+
 The same model exists in two forms. Output matches within $0.04 per share across all scenarios.
 
 ### Google Sheets — Assumptions tab
@@ -125,9 +148,11 @@ This dual implementation demonstrates the ability to translate financial logic b
 
 ## Data sources
 
-- Chipotle Mexican Grill 10-K filings (2021–2025), SEC EDGAR
-- Current share price: $32.89 (May 2026)
-- Sell-side targets: Guggenheim $35, consensus ~$46, Citi $46
+All inputs are verifiable. See [`docs/sources.md`](docs/sources.md) for direct links to each filing and market data point.
+
+- **Historicals:** Chipotle 10-K filings (2021–2025), SEC EDGAR
+- **Current share price:** $32.89 (May 2026)
+- **Sell-side targets:** Guggenheim $35 (bearish), Consensus ~$46, Citi $46 (bullish)
 
 ---
 

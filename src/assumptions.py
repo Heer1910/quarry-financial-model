@@ -1,17 +1,28 @@
 """
 assumptions.py
 
-Stores forcast assumptions for Chipotle financial model.
+Stores forecast assumptions for Chipotle financial model.
 Three scenarios: Base, Bull, Bear.
 
 Each assumption is keyed by year (2026-2030) where applicable.
 """
 
-# Forcast years
+# Forecast years
 FORECAST_YEARS = [2026, 2027, 2028, 2029, 2030]
 
+# ---------------------------------------------------------
+# MARKET INPUTS — shared across all scenarios
+# These are external data points, not scenario-dependent.
+# Updated: May 2026
+# ---------------------------------------------------------
+MARKET_INPUTS = {
+    "diluted_shares_2025": 1342616,    # 2025A diluted shares outstanding ($K)
+    "current_price": 32.89,            # CMG share price as of May 2026
+    "current_price_date": "May 2026",  # Used for display in dashboard
+}
+
 # --------------------------------------------------------------------
-# BASE CASE - matches teh current Sheets model
+# BASE CASE - matches the current Sheets model
 # --------------------------------------------------------------------
 
 BASE = {
@@ -71,7 +82,7 @@ BASE = {
 # ---------------------------------------------------------
 
 BULL = {
-    **BASE,  # start with all Base values, then override below
+    **BASE,
     "openings": {2026: 360, 2027: 385, 2028: 410, 2029: 435, 2030: 460},
     "auv_growth": {2026: 0.040, 2027: 0.045, 2028: 0.040, 2029: 0.035, 2030: 0.030},
     "food_bev_pkg_pct": 0.285,
@@ -79,6 +90,8 @@ BULL = {
     "ga_pct": 0.050,
     "beta": 0.90,
     "terminal_growth": 0.030,
+    # Bull case: management accelerates buybacks given strong cash generation
+    "buybacks": {2026: 1700000, 2027: 2000000, 2028: 2200000, 2029: 2200000, 2030: 2200000},
 }
 
 
@@ -95,6 +108,8 @@ BEAR = {
     "ga_pct": 0.060,
     "beta": 1.20,
     "terminal_growth": 0.020,
+    # Bear case: management pulls back on buybacks when growth disappoints
+    "buybacks": {2026: 800000, 2027: 900000, 2028: 1000000, 2029: 1000000, 2030: 1000000},
 }
 
 # ---------------------------------------------------------

@@ -156,10 +156,10 @@ def run_dcf(
     equity_value = enterprise_value - net_debt
 
     # Step 9: Implied share price
-    # Use 2025A diluted shares — most recent actual count
-    # From your Sheets: B44 in Assumptions tab (2021 = 1,425,550 post-split)
-    # 2025A shares from Sheets: F44
-    diluted_shares_2025 = 1342616  # 2025A diluted shares (thousands), from Sheets
+    # Pull market inputs from the central assumptions module
+    from src.assumptions import MARKET_INPUTS
+    diluted_shares_2025 = MARKET_INPUTS["diluted_shares_2025"]
+    current_price = MARKET_INPUTS["current_price"]
 
     implied_price = equity_value / diluted_shares_2025  # both in thousands; result is $/share
 

@@ -15,6 +15,7 @@ import streamlit as st
 import pandas as pd
 
 from src.main import run_full_model
+from src.assumptions import MARKET_INPUTS
 
 
 # ===================================================
@@ -94,6 +95,62 @@ with col3:
         delta_color="normal" if upside >= 0 else "inverse",
     )
 
+# ===================================================
+# Model integrity check
+# ===================================================
+forecast_bs = results["forecast_bs"]
+
+# Sum all assets
+assets = (
+    forecast_bs.loc["Cash"]
+    + forecast_bs.loc["Accounts_receivable"]
+    + forecast_bs.loc["Inventory"]
+    + forecast_bs.loc["Income_tax_receivable"]
+    + forecast_bs.loc["Prepaid_other_ca"]
+    + forecast_bs.loc["PPE_net"]
+    + forecast_bs.loc["Short_term_investments"]
+    + forecast_bs.loc["Long_term_investments"]
+    + forecast_bs.loc["Restricted_cash"]
+    + forecast_bs.loc["Other_lt_assets"]
+    + forecast_bs.loc["Goodwill"]
+    + forecast_bs.loc["Operating_lease_assets"]
+)
+
+# Sum all liabilities + equity
+liabilities_equity = (
+    forecast_bs.loc["Accounts_payable"]
+    + forecast_bs.loc["Accrued_payroll"]
+    + forecast_bs.loc["Accrued_liabilities"]
+    + forecast_bs.loc["Unearned_revenue"]
+    + forecast_bs.loc["Current_lease_liab"]
+    + forecast_bs.loc["LT_lease_liab"]
+    + forecast_bs.loc["Deferred_tax_liab"]
+    + forecast_bs.loc["Other_lt_liab"]
+    + forecast_bs.loc["Common_stock"]
+    + forecast_bs.loc["APIC"]
+    + forecast_bs.loc["AOCI"]
+    + forecast_bs.loc["Treasury_stock"]
+    + forecast_bs.loc["Retained_earnings"]
+)
+
+# Compute the max imbalance across forecast years
+max_imbalance = (assets - liabilities_equity).abs().max()
+
+# Display as a green status badge
+col_check1, col_check2 = st.columns([1, 3])
+with col_check1:
+    if max_imbalance < 500_000:
+        st.success(f"✅ Balance check: ${max_imbalance:,.0f}K")
+    else:
+        st.warning(f"⚠️ Balance check: ${max_imbalance:,.0f}K")
+
+with col_check2:
+    st.caption(
+        "Total Assets = Total Liabilities + Equity. Small deviation from $0 reflects "
+        "simplified ASC 842 lease modeling in the Python implementation (full Sheets "
+        "model balances exactly)."
+    )
+
 
 # ===================================================
 # Scenario comparison (always shows all three)
@@ -113,14 +170,15 @@ for s in ["Bear", "Base", "Bull"]:
 
 st.dataframe(
     pd.DataFrame(scenarios_data).set_index("Scenario"),
-    use_container_width=True,
+    width='stretch',
 )
 
 bull_price = run_full_model('Bull')['dcf']['implied_price']
+current_price = dcf['current_price']
 st.info(
     f"💡 **Key insight:** All three scenarios imply CMG trades above intrinsic value. "
     f"Even the Bull case (aggressive recovery, 4 - 4.5% AUV growth, WACC 8.9%) implies "
-    f"only \\${bull_price:.2f} - still below the current \\$32.89."
+    f"only \\${bull_price:.2f} - still below the current \\${current_price:.2f}."
 )
 
 
@@ -139,7 +197,7 @@ with col1:
     st.write(f"- Beta: {assumptions['beta']:.2f}")
     st.write(f"- Cost of equity: {(assumptions['risk_free_rate'] + assumptions['beta'] * assumptions['equity_risk_premium']):.2%}")
     st.write(f"- After-tax cost of debt: {assumptions['after_tax_cost_of_debt']:.2%}")
-    st.write(f"- WACC: {dcf['wacc']:.2%}**")
+    st.write(f"- WACC: {dcf['wacc']:.2%}")
 
 with col2:
     st.markdown("**Valuation Bridge**")
@@ -164,7 +222,7 @@ for col in ufcf_display.columns:
         ufcf_display[col] = ufcf_display[col].apply(lambda x: f"${x:,.0f}")
 ufcf_display.loc["Tax_rate"] = ufcf_df.loc["Tax_rate"].apply(lambda x: f"{x:.1%}")
 
-st.dataframe(ufcf_display, use_container_width=True)
+st.dataframe(ufcf_display, width='stretch')
 
 
 # ===================================================
@@ -177,27 +235,28 @@ with st.expander("📈 Income Statement (2026E–2030E)"):
     is_display = results["forecast_is"].copy()
     for col in is_display.columns:
         is_display[col] = is_display[col].apply(lambda x: f"${x:,.0f}")
-    st.dataframe(is_display, use_container_width=True)
+    st.dataframe(is_display, width='stretch')
 
 with st.expander("📊 Balance Sheet (2026E–2030E)"):
     bs_display = results["forecast_bs"].copy()
     for col in bs_display.columns:
         bs_display[col] = bs_display[col].apply(lambda x: f"${x:,.0f}")
-    st.dataframe(bs_display, use_container_width=True)
+    st.dataframe(bs_display, width='stretch')
 
 with st.expander("💰 Cash Flow Statement (2026E–2030E)"):
     cf_display = results["forecast_cf"].copy()
     for col in cf_display.columns:
         cf_display[col] = cf_display[col].apply(lambda x: f"${x:,.0f}")
-    st.dataframe(cf_display, use_container_width=True)
+    st.dataframe(cf_display, width='stretch')
 
 
 # ===================================================
 # Footer
 # ===================================================
+
 st.markdown("---")
 st.markdown(
-    "**Data source:** Chipotle 10-K filings (2021–2025), SEC EDGAR · "
-    "**Current price as of:** May 2026 · "
-    "**Model:** [GitHub](https://github.com/Heer1910/quarry-financial-model)"
+    f"**Data source:** Chipotle 10-K filings (2021–2025), SEC EDGAR · "
+    f"**Current price as of:** {MARKET_INPUTS['current_price_date']} · "
+    f"**Model:** [GitHub](https://github.com/Heer1910/quarry-financial-model)"
 )

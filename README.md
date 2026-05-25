@@ -1,5 +1,7 @@
 # Quarry - Chipotle Mexican Grill Financial Model
 
+🌐 **[Live Demo →](https://quarry-cmg-model.streamlit.app)** · 📂 [GitHub Repo](https://github.com/Heer1910/quarry-financial-model)
+
 A complete three-statement financial model and DCF valuation for Chipotle Mexican Grill (NYSE: CMG), built in both Google Sheets and Python.
 
 **Implied share price:** $19.40 (Base case) vs. current $32.89 → **41% downside**
